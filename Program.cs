@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-bool CheckAdress(string ip)
+// Non-OOP code on C# :p
+
+bool CheckSequence(string ip)
 {
     for (int i = 0; i < ip.Length; i++)
     {
@@ -30,11 +32,11 @@ bool CheckAdress(string ip)
     return true;
 }
 
-List<int> GetAdress(string ip)
+List<int> SequenceToInt(string ip)
 {
-    if (!CheckAdress(ip))
+    if (!CheckSequence(ip))
     {
-        throw new Exception("Невалидный адресс");
+        throw new Exception("Invalid sequence!");
     }
 
     string[] nums = ip.Split('.');
@@ -48,15 +50,36 @@ List<int> GetAdress(string ip)
     return ipNums;
 }
 
-List<int> GetId(bool isHost, string ip, string mask)
+bool CheckMask(List<int> mask)
 {
-    if (!CheckAdress(mask)) // Вроде для маски такие же правила валидности, как и для айпишника
+    foreach (int maskByte in mask)
     {
-        throw new Exception("Невалидная маска");
+        string binary = Convert.ToString(maskByte, 2);
+        bool metZero = false;
+        foreach(char bin in binary)
+        {
+            if (bin == '0' && !metZero)
+            {
+                metZero = true;
+            } else if (metZero)
+            {
+                return false;
+            }
+        }
     }
 
-    var adress = GetAdress(ip);
-    var intMask = GetAdress(mask); // Та же картина
+    return true;
+}
+
+List<int> GetId(bool isHost, string ip, string mask)
+{
+    var intMask = SequenceToInt(mask);
+    if (!CheckMask(intMask))
+    {
+        throw new Exception("Invalid mask!");
+    }
+
+    var adress = SequenceToInt(ip);
     var hostId = new List<int>();
 
     for (int i = 0; i < adress.Count; i++)
@@ -71,5 +94,5 @@ List<int> GetId(bool isHost, string ip, string mask)
     return hostId;
 }
 
-foreach (var val in GetId(true, "127.0.0.1", "255.255.0.0"))
-    Console.WriteLine(val);
+foreach (var val in GetId(false, "127.0.0.1", "255.255.0.0"))
+    Console.Write($"{val} ");
