@@ -94,5 +94,15 @@ List<int> GetId(bool isHost, string ip, string mask)
     return hostId;
 }
 
-foreach (var val in GetId(false, "127.0.0.1", "255.255.0.0"))
-    Console.Write($"{val} ");
+while (true)
+{
+    Console.Write("IP: ");
+    string ip = Console.ReadLine();
+    Console.Write("Mask: ");
+    string mask = Console.ReadLine();
+    Console.Write("Is Host ID? (Y/N): ");
+    bool isHost = Char.ToUpper(Console.ReadLine()[0]) == 'Y';
+    foreach (var val in GetId(isHost, ip, mask))
+        Console.Write($"{val} ");
+    Console.WriteLine();
+}
