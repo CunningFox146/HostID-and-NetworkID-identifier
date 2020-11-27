@@ -99,6 +99,29 @@ List<int> GetId(bool isHost, string ip, string mask)
     return hostId;
 }
 
+List<int> GetBroadcast(string ip, string mask)
+{
+    var intMask = SequenceToInt(mask);
+    if (!CheckMask(intMask))
+    {
+        throw new Exception("Invalid mask!");
+    }
+    var adress = SequenceToInt(ip);
+    var broadcast = new List<int>();
+
+    for (int i = 0; i < adress.Count; i++)
+    {
+        int ipByte = adress[i];
+        int maskByte = intMask[i];
+
+        Byte revertedMask = (Byte)~maskByte;
+        int val = ipByte & maskByte | revertedMask;
+        broadcast.Add(val);
+    }
+
+    return broadcast;
+}
+
 while (true)
 {
     Console.Write("IP: ");
@@ -113,6 +136,11 @@ while (true)
     try
     {
         foreach (var val in GetId(isHost, ip, mask))
+        {
+            Console.Write($"{val} ");
+        }
+        Console.WriteLine("\nBroadcast");
+        foreach (var val in GetBroadcast(ip, mask))
         {
             Console.Write($"{val} ");
         }
