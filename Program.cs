@@ -52,6 +52,11 @@ List<int> SequenceToInt(string ip)
 
 bool CheckMask(List<int> mask)
 {
+    if (mask[0] != 255)
+    {
+        return false;
+    }
+
     foreach (int maskByte in mask)
     {
         string binary = Convert.ToString(maskByte, 2);
@@ -105,9 +110,19 @@ while (true)
     Console.Write("Is Host ID? (Y/N): ");
     bool isHost = Char.ToUpper(Console.ReadLine()[0]) == 'Y';
 
-    foreach (var val in GetId(isHost, ip, mask))
+    try
     {
-        Console.Write($"{val} ");
+        foreach (var val in GetId(isHost, ip, mask))
+        {
+            Console.Write($"{val} ");
+        }
     }
-    Console.WriteLine("\n");
+    catch (Exception ex)
+    {
+        Console.Write(ex.Message);
+    }
+    finally
+    {
+        Console.WriteLine("\n");
+    }
 }
